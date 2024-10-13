@@ -31,8 +31,9 @@ Resources:
             Statement:
               - Effect: Allow
                 Action:
-                  - "ecr:*"
-                  - "logs:*"
+                  - ecr:*
+                  - logs:*
+                  - ssm:*
                 Resource: "*"
 
   BatchComputeEnvironment:
