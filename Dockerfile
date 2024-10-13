@@ -1,4 +1,4 @@
-# Use Amazon Corretto 11 for Java 11
+# Use Amazon Corretto 11 for Java 11 ref: https://gallery.ecr.aws/amazoncorretto/amazoncorretto
 FROM public.ecr.aws/amazoncorretto/amazoncorretto:11.0.18-al2023-headless
 
 # Set the working directory
