@@ -1,0 +1,20 @@
+version: 0.2
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin `aws sts get-caller-identity --query Account --output text`.dkr.ecr.$AWS_REGION.amazonaws.com
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Building the Docker image...
+      - docker build -t batch-jobs/test-job .
+      - docker tag batch-jobs/test-job:latest `aws sts get-caller-identity --query Account --output text`.dkr.ecr.$AWS_REGION.amazonaws.com/batch-jobs/test-job:latest
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Pushing the Docker image...
+      - docker push `aws sts get-caller-identity --query Account --output text`.dkr.ecr.$AWS_REGION.amazonaws.com/batch-jobs/test-job:latest
+artifacts:
+  files:
+    - '**/*'
