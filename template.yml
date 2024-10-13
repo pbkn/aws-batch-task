@@ -42,7 +42,7 @@ Resources:
       ServiceRole: !GetAtt BatchJobRole.Arn
       ComputeResources:
         Type: FARGATE
-        MaxvCpus: 0.25
+        MaxvCpus: 1
         Subnets: !Ref Subnets
         SecurityGroupIds: !Ref SecurityGroups
 
