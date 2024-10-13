@@ -63,7 +63,7 @@ Resources:
     Type: AWS::Batch::JobDefinition
     Properties:
       JobDefinitionName: "TestJobDefinition"
-      Type: Container
+      Type: container
       PlatformCapabilities:
         - FARGATE
       ContainerProperties:
@@ -75,10 +75,10 @@ Resources:
             awslogs-region: !Ref AWS::Region
             awslogs-stream-prefix: batch
         ResourceRequirements:
-          - type: VCPU
-            value: "0.25"
-          - type: MEMORY
-            value: "512"
+          - Type: VCPU
+            Value: '0.25'
+          - Type: MEMORY
+            Value: '512'
         Command: ["java", "-jar", "target/aws-batch-task-1.0-SNAPSHOT.jar"]
         JobRoleArn: !GetAtt BatchJobRole.Arn
         ExecutionRoleArn: !GetAtt BatchJobRole.Arn
