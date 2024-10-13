@@ -13,6 +13,7 @@ Resources:
     Properties:
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/AWSBatchFullAccess
+        - arn:aws:iam::aws:policy/AmazonECS_FullAccess
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -29,7 +30,6 @@ Resources:
                 Action:
                   - "ecr:*"
                   - "logs:*"
-                  - "ecs:*"
                 Resource: "*"
 
   BatchComputeEnvironment:
