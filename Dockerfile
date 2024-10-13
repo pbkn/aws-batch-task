@@ -8,14 +8,13 @@ WORKDIR /app
 COPY pom.xml /app
 COPY src /app/src
 
-# Set JAVA_HOME environment variable
-ENV JAVA_HOME /usr/lib/jvm/java-11-amazon-corretto
-ENV PATH "$PATH:$JAVA_HOME/bin"
-
-# Install Maven
-RUN yum update -y  \
-    && yum install -y maven \
-    && mvn clean package -DskipTests
+# Install Maven with default JAVA_HOME from the base image
+RUN yum update -y && \
+    yum install -y maven && \
+    export JAVA_HOME="$(dirname $(dirname $(readlink -f $(which java))))" && \
+    echo "JAVA_HOME is set to $JAVA_HOME" && \
+    export PATH="$JAVA_HOME/bin:$PATH" && \
+    mvn clean package -DskipTests
 
 # Set the command to run the built JAR
 CMD ["java", "-jar", "target/aws-batch-task-1.0-SNAPSHOT.jar"]
