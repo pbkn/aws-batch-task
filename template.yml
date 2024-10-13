@@ -71,6 +71,8 @@ Resources:
         - FARGATE
       ContainerProperties:
         Image: !Sub "${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/batch-jobs/test-job:latest"
+        NetworkConfiguration:
+          AssignPublicIp: ENABLED
         LogConfiguration:
           LogDriver: awslogs
           Options:
