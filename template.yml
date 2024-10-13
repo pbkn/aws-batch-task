@@ -74,8 +74,11 @@ Resources:
             awslogs-group: !Ref BatchLogGroup
             awslogs-region: !Ref AWS::Region
             awslogs-stream-prefix: batch
-        Vcpus: 1
-        Memory: 512
+        ResourceRequirements:
+          - type: "VCPU"
+            value: "0.25"
+          - type: "MEMORY"
+            value: "512"
         Command: ["java", "-jar", "target/aws-batch-task-1.0-SNAPSHOT.jar"]
         JobRoleArn: !GetAtt BatchJobRole.Arn
         ExecutionRoleArn: !GetAtt BatchJobRole.Arn
