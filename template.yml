@@ -19,7 +19,10 @@ Resources:
         Statement:
           - Effect: Allow
             Principal:
-              Service: [ batch.amazonaws.com ]
+              Service:
+                - batch.amazonaws.com
+                - ecs.amazonaws.com
+                - ecs-tasks.amazonaws.com
             Action: [ sts:AssumeRole ]
       Policies:
         - PolicyName: TestJobPermissions
