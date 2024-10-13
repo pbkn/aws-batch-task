@@ -8,6 +8,9 @@ WORKDIR /app
 COPY pom.xml /app
 COPY src /app/src
 
+# Set JAVA_HOME environment variable
+ENV JAVA_HOME=/usr/lib/jvm/java-11-amazon-corretto
+
 # Install Maven
 RUN yum update -y  \
     && yum install -y maven \
