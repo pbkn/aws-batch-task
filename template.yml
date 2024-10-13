@@ -1,4 +1,12 @@
 AWSTemplateFormatVersion: '2010-09-09'
+Parameters:
+  Subnets:
+    Type: AWS::SSM::Parameter::Value<List<String>>
+    Default: /defaultvpc/subnet/ids/stringList
+  SecurityGroups:
+    Type: AWS::SSM::Parameter::Value<List<String>>
+    Default: /defaultvpc/securitygroup/ids/stringList
+
 Resources:
   BatchJobRole:
     Type: AWS::IAM::Role
@@ -36,8 +44,8 @@ Resources:
         Type: FARGATE
         MinvCpus: 0
         MaxvCpus: 1
-        Subnets: !Split [ ",", "{{resolve:ssm:/defaultvpc/subnet/ids/stringList}}" ] # Get subnet IDs from SSM Parameter Store using dynamic reference
-        SecurityGroupIds: !Split [ ",", "{{resolve:ssm:/defaultvpc/securitygroup/ids/stringList}}" ] # Get security group IDs from SSM Parameter Store using dynamic reference
+        Subnets: !Ref Subnets
+        SecurityGroupIds: !Ref SecurityGroups
 
   BatchJobQueue:
     Type: AWS::Batch::JobQueue
