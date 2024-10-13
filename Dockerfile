@@ -9,11 +9,9 @@ COPY pom.xml /app
 COPY src /app/src
 
 # Install Maven
-RUN yum update -y && \
-    yum install -y maven
-
-# Build the Maven project
-RUN mvn clean package -DskipTests
+RUN yum update -y  \
+    && yum install -y maven \
+    && mvn clean package -DskipTests
 
 # Set the command to run the built JAR
 CMD ["java", "-jar", "target/aws-batch-task-1.0-SNAPSHOT.jar"]
