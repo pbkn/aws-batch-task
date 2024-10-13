@@ -12,7 +12,7 @@ Resources:
     Type: AWS::IAM::Role
     Properties:
       ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/service-role/AWSBatchServiceRole
+        - arn:aws:iam::aws:policy/AWSBatchFullAccess
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -78,7 +78,7 @@ Resources:
             awslogs-region: !Ref AWS::Region
             awslogs-stream-prefix: batch
         Vcpus: 1
-        Memory: 2048
+        Memory: 1024
         Command: ["java", "-jar", "target/aws-batch-task-1.0-SNAPSHOT.jar"]
         JobRoleArn: !GetAtt BatchJobRole.Arn
         ExecutionRoleArn: !GetAtt BatchJobRole.Arn
