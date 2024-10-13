@@ -42,8 +42,6 @@ Resources:
       ServiceRole: !GetAtt BatchJobRole.Arn
       ComputeResources:
         Type: FARGATE
-        MinvCpus: 0
-        MaxvCpus: 1
         Subnets: !Ref Subnets
         SecurityGroupIds: !Ref SecurityGroups
 
@@ -77,7 +75,6 @@ Resources:
             awslogs-group: !Ref BatchLogGroup
             awslogs-region: !Ref AWS::Region
             awslogs-stream-prefix: batch
-        Vcpus: 1
         Memory: 1024
         Command: ["java", "-jar", "target/aws-batch-task-1.0-SNAPSHOT.jar"]
         JobRoleArn: !GetAtt BatchJobRole.Arn
