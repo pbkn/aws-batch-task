@@ -27,11 +27,9 @@ Resources:
             Statement:
               - Effect: Allow
                 Action:
-                  - "ecr:GetDownloadUrlForLayer"
-                  - "ecr:BatchGetImage"
-                  - "logs:CreateLogGroup"
-                  - "logs:CreateLogStream"
-                  - "logs:PutLogEvents"
+                  - "ecr:*"
+                  - "logs:*"
+                  - "ecs:*"
                 Resource: "*"
 
   BatchComputeEnvironment:
@@ -76,7 +74,7 @@ Resources:
             awslogs-group: !Ref BatchLogGroup
             awslogs-region: !Ref AWS::Region
             awslogs-stream-prefix: batch
-        vCPU: 0.25
+        Vcpus: 1
         Memory: 512
         Command: ["java", "-jar", "target/aws-batch-task-1.0-SNAPSHOT.jar"]
         JobRoleArn: !GetAtt BatchJobRole.Arn
