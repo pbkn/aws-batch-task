@@ -1,0 +1,86 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  BatchJobRole:
+    Type: AWS::IAM::Role
+    Properties:
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSBatchServiceRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: [ batch.amazonaws.com ]
+            Action: [ sts:AssumeRole ]
+      Policies:
+        - PolicyName: TestJobPermissions
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "ecr:GetDownloadUrlForLayer"
+                  - "ecr:BatchGetImage"
+                  - "logs:CreateLogGroup"
+                  - "logs:CreateLogStream"
+                  - "logs:PutLogEvents"
+                Resource: "*"
+
+  BatchComputeEnvironment:
+    Type: AWS::Batch::ComputeEnvironment
+    Properties:
+      ComputeEnvironmentName: "TestJobComputeEnv"
+      Type: MANAGED
+      ServiceRole: !GetAtt BatchJobRole.Arn
+      ComputeResources:
+        Type: FARGATE
+        MinvCpus: 0
+        MaxvCpus: 1
+        Subnets: !Split [ ",", "{{resolve:ssm:/defaultvpc/subnet/ids/stringList}}" ] # Get subnet IDs from SSM Parameter Store using dynamic reference
+        SecurityGroupIds: !Split [ ",", "{{resolve:ssm:/defaultvpc/securitygroup/ids/stringList}}" ] # Get security group IDs from SSM Parameter Store using dynamic reference
+
+  BatchJobQueue:
+    Type: AWS::Batch::JobQueue
+    Properties:
+      JobQueueName: "TestJobQueue"
+      Priority: 1
+      ComputeEnvironmentOrder:
+        - Order: 1
+          ComputeEnvironment: !Ref BatchComputeEnvironment
+
+  BatchLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/batch/job/TestJobDefinition-${AWS::AccountId}-${AWS::Region}"
+      RetentionInDays: 7
+
+  BatchJobDefinition:
+    Type: AWS::Batch::JobDefinition
+    Properties:
+      JobDefinitionName: "TestJobDefinition"
+      Type: Container
+      PlatformCapabilities:
+        - FARGATE
+      ContainerProperties:
+        Image: !Sub "${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/batch-jobs/test-job:latest"
+        LogConfiguration:
+          LogDriver: awslogs
+          Options:
+            awslogs-group: !Ref BatchLogGroup
+            awslogs-region: !Ref AWS::Region
+            awslogs-stream-prefix: batch
+        Vcpus: 1
+        Memory: 2048
+        Command: ["java", "-jar", "target/aws-batch-task-1.0-SNAPSHOT.jar"]
+        JobRoleArn: !GetAtt BatchJobRole.Arn
+        ExecutionRoleArn: !GetAtt BatchJobRole.Arn
+      RetryStrategy:
+        Attempts: 1
+
+Outputs:
+  JobQueueName:
+    Description: "Name of the Batch Job Queue"
+    Value: !Ref BatchJobQueue
+  ComputeEnvironmentName:
+    Description: "Name of the Batch Compute Environment"
+    Value: !Ref BatchComputeEnvironment
