@@ -1,5 +1,5 @@
 # Use Amazon Corretto 11 for Java 11
-FROM public.ecr.aws/amazoncorretto/amazoncorretto:11-al2023-headless-arm64
+FROM public.ecr.aws/amazoncorretto/amazoncorretto:11.0.18-al2023-headless
 
 # Set the working directory
 WORKDIR /app
